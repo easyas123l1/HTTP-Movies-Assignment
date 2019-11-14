@@ -20,6 +20,16 @@ const App = () => {
     setSavedList([...savedList, movie]);
   };
 
+  const updateMovies = (id, updateMovie) => {
+    let newMovies = movies.map(movie => {
+      if (movie.id === id) {
+        return updateMovie;
+      }
+      return movie;
+    })
+    setMovies(newMovies)
+  }
+
   return (
     <>
       <SavedList list={savedList} />
@@ -33,7 +43,7 @@ const App = () => {
       <Route 
         path='/update-movie/:id'
         render={props => {
-          return <MovieForm {...props} movies={movies} />
+          return <MovieForm {...props} movies={movies} updateMovies={updateMovies} />
         }}
         //render the component we want too add!
         />

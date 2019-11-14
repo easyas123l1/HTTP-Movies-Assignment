@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Star from './Star';
 
 const initialForm = {
   title: '',
   director: '',
   metascore: '',
+  star: '',
   stars: []
 }
 
@@ -17,7 +19,6 @@ const MovieForm = props => {
   }
 
   useEffect(() => {
-    console.log(props);
     if (props.movies.length > 0) {
       const newMovie = props.movies.find( movie => `${movie.id}` === props.match.params.id);
       setMovie(newMovie);
@@ -26,6 +27,26 @@ const MovieForm = props => {
 
   const handleSubmit = e => {
     e.preventDefault();
+    axios.put(`http://localhost:5000/api/movies/${props.match.params.id}`, movie)
+    .then(res => {
+      props.updateMovies(props.match.params.id, res.data)
+      props.history.push('/');
+    })
+    .catch(err => console.log(err));
+  }
+
+  const removeStar = remStar => {
+    let newStars = movie.stars.filter(star => star !== remStar)
+    setMovie({...movie, stars: newStars })
+  }
+
+  const addStar = e => {
+    e.preventDefault();
+    if (movie.star) {
+      let newStars = movie.stars;
+      newStars.push(movie.star);
+      setMovie({...movie, star: '', stars: newStars })
+    }
   }
 
   return (
@@ -51,13 +72,18 @@ const MovieForm = props => {
         placeholder='metascore'
         value={movie.metascore}
         />
-        {/* <input 
+        {movie.stars.map(star => (
+          <Star key={star} star={star} removeStar={removeStar} />
+        ))}
+        <br/>
+        <input
         type='text'
-        name='title'
+        name='star'
         onChange={changeHandler}
-        placeholder='title'
-        value={movie.title}
-        /> */}
+        placeholder='add star'
+        value={movie.star}
+        /> 
+        <button onClick={addStar}>Add Star</button><br/>
         <button>Update Movie</button>
     </form>
   );
