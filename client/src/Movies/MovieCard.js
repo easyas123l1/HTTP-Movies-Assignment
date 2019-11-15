@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios';
 
 const MovieCard = props => {
-  console.log(props);
   const { title, director, metascore, stars, id } = props.movie;
 
   const deleteMovie = e => {

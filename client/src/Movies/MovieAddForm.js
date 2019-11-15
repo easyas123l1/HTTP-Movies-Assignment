@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import Star from './Star';
+import axios from 'axios';
 
 const initialForm = {
   title: '',
@@ -10,7 +10,7 @@ const initialForm = {
   stars: []
 }
 
-const MovieForm = props => {
+const MovieAddForm = props => {
   const [movie, setMovie] = useState(initialForm);
 
   const changeHandler = e => {
@@ -18,28 +18,20 @@ const MovieForm = props => {
     setMovie({...movie, [e.target.name]: e.target.value})  
   }
 
-  useEffect(() => {
-    if (props.movies.length > 0) {
-      const newMovie = props.movies.find( movie => `${movie.id}` === props.match.params.id);
-      setMovie(newMovie);
-    }
-  }, [props.movies, props.match.params.id])
-
-  const handleSubmit = e => {
-    e.preventDefault();
-    axios.put(`http://localhost:5000/api/movies/${props.match.params.id}`, movie)
-    .then(res => {
-      console.log(res);
-      props.updateMovies(props.match.params.id, res.data)
-      setMovie({initialForm})
-      props.history.push('/');
-    })
-    .catch(err => console.log(err));
-  }
-
   const removeStar = remStar => {
     let newStars = movie.stars.filter(star => star !== remStar)
     setMovie({...movie, stars: newStars })
+  }
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    axios.post(`http://localhost:5000/api/movies/`, movie)
+    .then(res => {
+      console.log(res);
+      setMovie({...movie, stars: []})
+      props.history.push('/');
+    })
+    .catch(err => console.log(err));
   }
 
   const addStar = e => {
@@ -86,9 +78,9 @@ const MovieForm = props => {
         value={movie.star}
         /> 
         <button onClick={addStar}>Add Star</button><br/>
-        <button>Update Movie</button>
+        <button>Add Movie</button>
     </form>
   );
 };
 
-export default MovieForm;
+export default MovieAddForm;
