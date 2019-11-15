@@ -45,7 +45,6 @@ const App = () => {
         render={props => {
           return <MovieForm {...props} movies={movies} updateMovies={updateMovies} />
         }}
-        //render the component we want too add!
         />
     </>
   );
